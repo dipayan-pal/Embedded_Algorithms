@@ -1,4 +1,7 @@
+/*************************************************************************************
 This is a collection of embedded application functionalities.
 Most of the code is based on the 32 bit ESP32 system but can easily be transported to a different platform.
 
 The details of each functionality is documented on the file itself.
+
+*******************************************************************************/
