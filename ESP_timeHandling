@@ -1,4 +1,4 @@
 There are basically two categories of time in the ESP system. They can be classified as :
 	1.	Interval Time 	->	Time via which intervals can be measured.
-							This can be used to time events, or rather gap between events.
-							Basic timing delays fall in this category. 
+					This can be used to time events, or rather gap between events.
+					Basic timing delays fall in this category. 
