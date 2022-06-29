@@ -1,16 +1,78 @@
-There are basically two categories of time in the ESP system. They can be classified as :
-        1.      Interval Time   ->      Time via which intervals can be measured.
-                                        This can be used to time events, or rather gap between events.
-                                        Basic timing delays fall into this category.
+ ______  _____ _____    _______ _____ __  __ ______  
+ |  ____|/ ____|  __ \  |__   __|_   _|  \/  |  ____| 
+ | |__  | (___ | |__) |    | |    | | | \  / | |__    
+ |  __|  \___ \|  ___/     | |    | | | |\/| |  __|   
+ | |____ ____) | |         | |   _| |_| |  | | |____  
+ |______|_____/|_|         |_|  |_____|_|  |_|______| handling...
+                                                      
+==============================================================                                                      
 
-                                        Data Structure to handle interval time:
-                                        ---------------------------------------
-                                        struct timeval tv;      //This struct type stores the amount of time elapsed
-                                                                //since system REBOOT in sec as well as usec form
-                                        gettimeofday(&tv);      //gettimeofday() populates the struct timeval
+## There are basically two categories of time in the ESP system. They can be classified as :
 
-                                        Using FREERTOS TICKS to determine interval:
-                                        --------------------------------------------
-                                        uint32_t tick_counter=xTaskGetTickCount(); //no. of ticks since REBOOT
-                                        /*TICK is a const accessed by portTICK_PERIOD_MS = 1msec*/
+	1.	Interval Time	->	Time via which intervals can be measured.
+					This can be used to time events, or rather gap between events.
+					Basic timing delays fall into this category. 
+							
+					#Data Structure to handle interval time:
+					---------------------------------------
+					struct timeval tv;	//This struct type stores the amount of time elapsed 
+								//since system REBOOT in sec as well as usec form
+					gettimeofday(&tv);	//gettimeofday() populates the struct timeval
+
+					#Using FREERTOS TICKS to determine interval:
+					--------------------------------------------
+					uint32_t tick_counter=xTaskGetTickCount(); //no. of ticks since REBOOT
+					/*TICK is a const accessed by portTICK_PERIOD_MS = 1msec*/
+
+					#Even more precise timing ~ usec interval:
+					------------------------------------------
+					>> Rare scenario 
+					>> ESP has a 'ccount' reg --> stores machine cycles since REBOOT
+					>> uint32_t value = xthal_get_ccount();
+	
+	
+	2.	Wall Clock	->	> Real world time
+					> Can be used to synchonize sensor data across various IOT devices
+					> Can be synced to an sntp server 
+					> SNTP server generally returns time in seconds elasped since EPOCH
+					  i.e. Jan 1 1970.
+					> Various data structure are available to distribute this data into
+					  readable format.
+					
+					#Data Structure to handle:
+					--------------------------
+					time_t time1;	//a typedef of a large integer type
+					struct tm tm1;	//a structure which converts time_t ie. secs since Jan 1 1970
+							//to a readable format having year, month, day etc...
+					
+					#Retrieve data (secs) from 1970
+					-------------------------------
+					time_t time1; 
+					time(&time1);	//time() populates time1 variable with secs since Jan1 1970
+						
+					#Once data is retrieved we could use various structs to display it
+					------------------------------------------------------------------
+					struct tm tm1;	//struct to display time_t data in year,month,day etc...
+					gmtime_r(&time1,&tm1); //populates the structure with GM time
+					printf("%d\t%d\n",tm1.tm_year,tm1.tm_mon);//prints year and month from tm1
+					
+					***IMPORTANT***
+					>> Year and month in tm1 struct will be since Jan 1 1970
+					>> Much better way is to dump the data of time1 into a formated string
+					   using asctime() api
+
+					#To display local time we have to set the timezone via env variable:
+					---------------------------------------------------------------------
+					setenv("TZ","UTC-5:30",1); //timezone for India UTC-5:30
+					tzset();
+
+
+					### CONNECT TO AN SNTP SERVER ###
+					---------------------------------
+					//we use the lwip libraries
+
+					
+
+
+
 
