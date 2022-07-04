@@ -44,7 +44,19 @@
 					time_t time1;	//a typedef of a large integer type
 					struct tm tm1;	//a structure which converts time_t ie. secs since Jan 1 1970
 							//to a readable format having year, month, day etc...
-					
+
+					### CONNECT TO AN SNTP SERVER ###
+					---------------------------------
+					//we use the lpip libraries
+					void start_sntp()
+					{
+						ip_addr_t addr;
+						sntp_setoperatingmode(SNTP_OPMODE_POLL);
+						inet_pton(AF_INET,"/*DNS of sntp server*/",&addr);
+						sntp_setserver(0,&addr);
+						sntp_init();
+					}
+										
 					#Retrieve data (secs) from 1970
 					-------------------------------
 					time_t time1; 
@@ -66,13 +78,18 @@
 					setenv("TZ","UTC-5:30",1); //timezone for India UTC-5:30
 					tzset();
 
-
-					### CONNECT TO AN SNTP SERVER ###
-					---------------------------------
-					//we use the lwip libraries
-
 					
+					#Once SNTP server has started and timezone has been set, we can use the APIs
+					---------------------------------------------------------------------------
+					/*Display GMT time in as a formated text string*/
+					
+					char buffer[20]; //to store the formated time string
+					printf("Formated string \t%s\n",asctime_r(gmtime(&time1),buffer); 
 
+					/*Display Local time (UTC-5:30)*/
+
+					char buffer[20];
+					printf("Formated string \t%s\n",asctime_r(localtime(&time1),buffer));
 
 
 
